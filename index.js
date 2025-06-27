@@ -21,7 +21,7 @@ const bots = {
   },
   '8156400800:AAEFZQ_sp4-O5XAqmU9NSnOe0Qw0k2KDOZs': {
     reply: `📋 产品经理岗位投递\n👉 @PM_job_group`
-  }
+  }, // Added comma here
   '7892070269:AAH2Mypqzf_iAHuEMXCEFAmu7P1g1mufkfs': {
     reply: `📋 产品经理岗位推荐\n👉 @PM_job_group`
   },
@@ -41,6 +41,7 @@ const bots = {
     reply: `💻 PHP岗位推荐\n👉 @PHP_job_group`
   }
 };
+
 
 // 加载关键词配置 JSON
 const keywordMap = JSON.parse(fs.readFileSync('keywordReplies.json', 'utf-8'));
