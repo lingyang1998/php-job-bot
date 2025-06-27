@@ -21,7 +21,7 @@ const bots = {
   },
   '8156400800:AAEFZQ_sp4-O5XAqmU9NSnOe0Qw0k2KDOZs': {
     reply: `📋 产品经理岗位投递\n👉 @PM_job_group`
-  }, // Added comma here
+  },
   '7892070269:AAH2Mypqzf_iAHuEMXCEFAmu7P1g1mufkfs': {
     reply: `📋 产品经理岗位推荐\n👉 @PM_job_group`
   },
@@ -42,21 +42,37 @@ const bots = {
   }
 };
 
-
 // 加载关键词配置 JSON
-const keywordMap = JSON.parse(fs.readFileSync('keywordReplies.json', 'utf-8'));
+let keywordMap = {};
+try {
+  keywordMap = JSON.parse(fs.readFileSync('keywordReplies.json', 'utf-8'));
+  console.log('✅ 关键词配置加载成功');
+} catch (err) {
+  console.error('❌ 加载关键词配置失败:', err);
+  process.exit(1);
+}
 
-// 清洗用户文本（去除标点 emoji 空格）
+// 清洗用户文本（保留中文、字母、数字和空格）
 function cleanText(text) {
-  return text.toLowerCase().replace(/[^\p{L}\p{N}]/gu, '').trim();
+  if (!text) return '';
+  // 保留中文、字母、数字和空格
+  return text.toLowerCase().replace(/[^\p{Script=Han}\p{L}\p{N}\s]/gu, '').replace(/\s+/g, ' ').trim();
 }
 
 // 匹配关键词
 function matchKeyword(text) {
+  if (!text) return null;
+  
   const cleaned = cleanText(text);
+  console.log('🔍 清洗后文本:', cleaned); // 调试日志
+  
   for (const key in keywordMap) {
     const keywords = key.split(',').map(k => cleanText(k));
+    console.log('🔎 尝试匹配关键词:', keywords); // 调试日志
+    
+    // 检查是否有任一关键词出现在用户输入中
     if (keywords.some(k => cleaned.includes(k))) {
+      console.log('🎯 匹配成功:', key); // 调试日志
       return keywordMap[key];
     }
   }
@@ -67,30 +83,47 @@ function matchKeyword(text) {
 app.post('/:token', async (req, res) => {
   const token = req.params.token;
   const config = bots[token];
+  
+  if (!config) {
+    console.warn(`⚠️ 未知的 Token: ${token}`);
+    return res.status(404).send('Bot not found');
+  }
+
   const chatId = req.body.message?.chat?.id;
   const textRaw = req.body.message?.text;
 
-  if (config && chatId) {
-    const text = textRaw || '';
-    console.log('📝 收到内容:', text);
+  if (!chatId) {
+    console.warn('⚠️ 缺少 chatId');
+    return res.status(400).send('Missing chatId');
+  }
 
-    const matchedReply = matchKeyword(text);
+  const text = textRaw || '';
+  console.log('📝 收到消息 - 用户ID:', chatId, '内容:', text);
 
-    const response = matchedReply || config.reply || '📢 请输入关键词查看岗位信息，如：远程岗位 / 简历投递 / 福利待遇';
+  const matchedReply = matchKeyword(text);
+  const response = matchedReply || config.reply || '📢 请输入关键词查看岗位信息，如：远程岗位 / 简历投递 / 福利待遇';
 
-    try {
-      await axios.post(`https://api.telegram.org/bot${token}/sendMessage`, {
-        chat_id: chatId,
-        text: response
-      });
-    } catch (err) {
-      console.error('❌ 消息发送失败:', err.message);
-    }
+  try {
+    await axios.post(`https://api.telegram.org/bot${token}/sendMessage`, {
+      chat_id: chatId,
+      text: response,
+      parse_mode: 'Markdown'
+    });
+    console.log('✅ 回复发送成功:', response.substring(0, 50) + '...');
+  } catch (err) {
+    console.error('❌ 消息发送失败:', err.response?.data || err.message);
   }
 
   res.send('ok');
 });
 
-app.listen(3000, () => {
-  console.log('✅ Multi-bot AI 招聘客服 is running!');
+// 错误处理
+app.use((err, req, res, next) => {
+  console.error('🔥 服务器错误:', err.stack);
+  res.status(500).send('Server error');
+});
+
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+  console.log(`✅ Multi-bot AI 招聘客服正在运行，端口: ${PORT}`);
 });
