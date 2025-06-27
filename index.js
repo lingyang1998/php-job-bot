@@ -1,10 +1,11 @@
 const express = require('express');
 const axios = require('axios');
+const fs = require('fs');
 
 const app = express();
 app.use(express.json());
 
-// 所有 bot 的配置：token 对应欢迎语和频道链接
+// 多 bot 配置：token → 默认频道引导
 const bots = {
   '7171854531:AAFag6hlDGL7B7K46WPE49GvhJy_b1XNkt4': {
     reply: `🎯 欢迎关注【运营岗位】\n👉 @yunying_job_group`
@@ -23,16 +24,32 @@ const bots = {
   }
 };
 
-// 主路由，路径中 token 用于识别 bot
+// 加载关键词自动回复配置
+const keywordMap = JSON.parse(fs.readFileSync('keywordReplies.json', 'utf-8'));
+
+// 匹配关键词
+function matchKeyword(text) {
+  for (const key in keywordMap) {
+    const keywords = key.split(',');
+    if (keywords.some(k => text.includes(k))) {
+      return keywordMap[key];
+    }
+  }
+  return null;
+}
+
+// 主入口：不同 bot 分别处理
 app.post('/:token', async (req, res) => {
   const token = req.params.token;
   const config = bots[token];
   const chatId = req.body.message?.chat?.id;
+  const text = req.body.message?.text?.toLowerCase();
 
   if (config && chatId) {
+    const reply = text ? matchKeyword(text) : null;
     await axios.post(`https://api.telegram.org/bot${token}/sendMessage`, {
       chat_id: chatId,
-      text: config.reply
+      text: reply || config.reply
     });
   }
 
@@ -40,5 +57,5 @@ app.post('/:token', async (req, res) => {
 });
 
 app.listen(3000, () => {
-  console.log('🤖 Multi-bot is running!');
+  console.log('🤖 Multi-bot + 关键词匹配 is running!');
 });
