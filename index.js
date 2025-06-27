@@ -10,7 +10,7 @@ app.post('/', async (req, res) => {
   const chatId = req.body.message?.chat?.id;
 
   if (chatId) {
-    const msg = `📢 欢迎关注我们的 PHP 招聘频道！\n👉 @PHP_job_group
+    const msg = `📢 欢迎关注我们的 PHP 招聘频道！\n👉 @PHP_job_group`;  // ✅ 修复：这里要关闭字符串
     await axios.post(`https://api.telegram.org/bot${token}/sendMessage`, {
       chat_id: chatId,
       text: msg
