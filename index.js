@@ -5,7 +5,7 @@ const fs = require('fs');
 const app = express();
 app.use(express.json());
 
-// 多 bot 配置：token → 默认频道引导
+// 多 Bot 配置
 const bots = {
   '7171854531:AAFag6hlDGL7B7K46WPE49GvhJy_b1XNkt4': {
     reply: `🎯 欢迎关注【运营岗位】\n👉 @yunying_job_group`
@@ -24,38 +24,54 @@ const bots = {
   }
 };
 
-// 加载关键词自动回复配置
+// 加载关键词配置 JSON
 const keywordMap = JSON.parse(fs.readFileSync('keywordReplies.json', 'utf-8'));
+
+// 清洗用户文本（去除标点 emoji 空格）
+function cleanText(text) {
+  return text.toLowerCase().replace(/[^\p{L}\p{N}]/gu, '').trim();
+}
 
 // 匹配关键词
 function matchKeyword(text) {
+  const cleaned = cleanText(text);
   for (const key in keywordMap) {
-    const keywords = key.split(',');
-    if (keywords.some(k => text.includes(k))) {
+    const keywords = key.split(',').map(k => cleanText(k));
+    if (keywords.some(k => cleaned.includes(k))) {
       return keywordMap[key];
     }
   }
   return null;
 }
 
-// 主入口：不同 bot 分别处理
+// 主入口
 app.post('/:token', async (req, res) => {
   const token = req.params.token;
   const config = bots[token];
   const chatId = req.body.message?.chat?.id;
-  const text = req.body.message?.text?.toLowerCase();
+  const textRaw = req.body.message?.text;
 
   if (config && chatId) {
-    const reply = text ? matchKeyword(text) : null;
-    await axios.post(`https://api.telegram.org/bot${token}/sendMessage`, {
-      chat_id: chatId,
-      text: reply || config.reply
-    });
+    const text = textRaw || '';
+    console.log('📝 收到内容:', text);
+
+    const matchedReply = matchKeyword(text);
+
+    const response = matchedReply || config.reply || '📢 请输入关键词查看岗位信息，如：远程岗位 / 简历投递 / 福利待遇';
+
+    try {
+      await axios.post(`https://api.telegram.org/bot${token}/sendMessage`, {
+        chat_id: chatId,
+        text: response
+      });
+    } catch (err) {
+      console.error('❌ 消息发送失败:', err.message);
+    }
   }
 
   res.send('ok');
 });
 
 app.listen(3000, () => {
-  console.log('🤖 Multi-bot + 关键词匹配 is running!');
+  console.log('✅ Multi-bot AI 招聘客服 is running!');
 });
