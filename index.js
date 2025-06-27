@@ -22,6 +22,24 @@ const bots = {
   '8156400800:AAEFZQ_sp4-O5XAqmU9NSnOe0Qw0k2KDOZs': {
     reply: `📋 产品经理岗位投递\n👉 @PM_job_group`
   }
+  '7892070269:AAH2Mypqzf_iAHuEMXCEFAmu7P1g1mufkfs': {
+    reply: `📋 产品经理岗位推荐\n👉 @PM_job_group`
+  },
+  '7358603470:AAFernynlE6-2_MHBBpyQvhKp6eyUjxD3ak': {
+    reply: `📋 产品经理岗位推荐\n👉 @PM_job_group`
+  },
+  '7724003289:AAEW22DgHtAB2T1Cr0x84j_SxO6Ox9do73Y': {
+    reply: `📋 产品经理岗位推荐\n👉 @PM_job_group`
+  },
+  '7756824011:AAEokWeLtdtkqknqz0USh5nGcw-PtHxHPio': {
+    reply: `📋 产品经理岗位推荐\n👉 @PM_job_group`
+  },
+  '8091025610:AAFh77-RS3W1IvxQhdE0HIADvZ9nZinKzEk': {
+    reply: `💻 PHP岗位推荐\n👉 @PHP_job_group`
+  },
+  '7731970911:AAG6-KPvFDHdfvjHITBtmimIBXJ4agXe5tc': {
+    reply: `💻 PHP岗位推荐\n👉 @PHP_job_group`
+  }
 };
 
 // 加载关键词配置 JSON
