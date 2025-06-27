@@ -4,23 +4,41 @@ const axios = require('axios');
 const app = express();
 app.use(express.json());
 
-// 自动回复逻辑
-app.post('/', async (req, res) => {
-  const token = process.env.TELEGRAM_TOKEN; // 从环境变量中获取 Token
+// 所有 bot 的配置：token 对应欢迎语和频道链接
+const bots = {
+  '7171854531:AAFag6hlDGL7B7K46WPE49GvhJy_b1XNkt4': {
+    reply: `🎯 欢迎关注【运营岗位】\n👉 @yunying_job_group`
+  },
+  '7931339905:AAFMGS76pZMaJsoT2fUCXZbAo7YVUHYbTXU': {
+    reply: `🔍 欢迎查看【SEO 岗位】\n👉 @SEO_job_group`
+  },
+  '7964552472:AAHikf4d2MjRdAnlDw2yqalrOSXOlleGd38': {
+    reply: `🧱 Web 前端岗位推荐\n👉 @web_H5_CSS_JS_job`
+  },
+  '7709168603:AAGTI3jqr8swAKlVatM1WQKNjS_lyJuINpk': {
+    reply: `🎨 UI / UX 求职频道\n👉 @UI_UX_job`
+  },
+  '8156400800:AAEFZQ_sp4-O5XAqmU9NSnOe0Qw0k2KDOZs': {
+    reply: `📋 产品经理岗位投递\n👉 @PM_job_group`
+  }
+};
+
+// 主路由，路径中 token 用于识别 bot
+app.post('/:token', async (req, res) => {
+  const token = req.params.token;
+  const config = bots[token];
   const chatId = req.body.message?.chat?.id;
 
-  if (chatId) {
-    const msg = `📢 欢迎关注我们的 PHP 招聘频道！\n👉 @PHP_job_group`;  // ✅ 修复：这里要关闭字符串
+  if (config && chatId) {
     await axios.post(`https://api.telegram.org/bot${token}/sendMessage`, {
       chat_id: chatId,
-      text: msg
+      text: config.reply
     });
   }
 
   res.send('ok');
 });
 
-// 启动服务
 app.listen(3000, () => {
-  console.log('Bot is running!');
+  console.log('🤖 Multi-bot is running!');
 });
