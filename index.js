@@ -13,6 +13,11 @@ const bots = {
   '7931339905:AAFMGS76pZMaJsoT2fUCXZbAo7YVUHYbTXU': {
     reply: `🔍 欢迎查看【SEO 岗位】\n👉 @SEO_job_group`
   },
+  
+  '7610127686:AAGD3RatvfYTOr2sD5_s_kq1b0JXl-5xaNc': {
+    reply: `🔍 欢迎查看【PHP 岗位】\n👉 @PHP_job_group`
+  },
+  
   '7964552472:AAHikf4d2MjRdAnlDw2yqalrOSXOlleGd38': {
     reply: `🧱 Web 前端岗位推荐\n👉 @web_H5_CSS_JS_job`
   },
