@@ -55,8 +55,12 @@ try {
 // 清洗用户文本（保留中文、字母、数字和空格）
 function cleanText(text) {
   if (!text) return '';
-  // 保留中文、字母、数字和空格
   return text.toLowerCase().replace(/[^\p{Script=Han}\p{L}\p{N}\s]/gu, '').replace(/\s+/g, ' ').trim();
+}
+
+// 转义Telegram用户名中的下划线
+function escapeUsername(text) {
+  return text.replace(/@(\w+)_(\w+)/g, '@$1\\_$2');
 }
 
 // 匹配关键词
@@ -64,15 +68,14 @@ function matchKeyword(text) {
   if (!text) return null;
   
   const cleaned = cleanText(text);
-  console.log('🔍 清洗后文本:', cleaned); // 调试日志
+  console.log('🔍 清洗后文本:', cleaned);
   
   for (const key in keywordMap) {
     const keywords = key.split(',').map(k => cleanText(k));
-    console.log('🔎 尝试匹配关键词:', keywords); // 调试日志
+    console.log('🔎 尝试匹配关键词:', keywords);
     
-    // 检查是否有任一关键词出现在用户输入中
     if (keywords.some(k => cleaned.includes(k))) {
-      console.log('🎯 匹配成功:', key); // 调试日志
+      console.log('🎯 匹配成功:', key);
       return keywordMap[key];
     }
   }
@@ -104,14 +107,23 @@ app.post('/:token', async (req, res) => {
   const response = matchedReply || config.reply || '📢 请输入关键词查看岗位信息，如：远程岗位 / 简历投递 / 福利待遇';
 
   try {
+    const escapedResponse = escapeUsername(response);
     await axios.post(`https://api.telegram.org/bot${token}/sendMessage`, {
       chat_id: chatId,
-      text: response,
-      parse_mode: 'Markdown'
+      text: escapedResponse,
+      parse_mode: 'MarkdownV2'
     });
-    console.log('✅ 回复发送成功:', response.substring(0, 50) + '...');
+    console.log('✅ 回复发送成功');
   } catch (err) {
     console.error('❌ 消息发送失败:', err.response?.data || err.message);
+    try {
+      await axios.post(`https://api.telegram.org/bot${token}/sendMessage`, {
+        chat_id: chatId,
+        text: response
+      });
+    } catch (fallbackErr) {
+      console.error('🔥 降级发送失败:', fallbackErr.message);
+    }
   }
 
   res.send('ok');
