@@ -17,7 +17,30 @@ const bots = {
   '7610127686:AAGD3RatvfYTOr2sD5_s_kq1b0JXl-5xaNc': {
     reply: `🔍 欢迎查看【PHP 岗位】\n👉 @PHP_job_group`
   },
-  
+   '7974931780:AAELrytLHKsC4XAZktMDUfPteBCo2crsPKA': {
+    reply: `🎯 欢迎关注招聘岗位\n👉 @HR_foya_job`
+  },
+  '8090677272:AAGWCQHgENvSXA8e-Wl7nWsBSQ-rt7KCBOA': {
+    reply: `🎯 欢迎关注招聘岗位\n👉 @HR_foya_job`
+  },
+  '7629133624:AAF4Is5JdT2iZPzRhXzDK8ZwwyPvcv8aJD4': {
+    reply: `🎯 欢迎关注招聘岗位\n👉 @HR_foya_job`
+  },
+  '7952117177:AAHI5cHs3sbD54sxFR0WpQcmZZ1QUe4DMWA': {
+    reply: `🧱 欢迎关注 Web 前端岗位\n👉 @web_job2`
+  },
+  '7422937810:AAFQxO9rJWZDG03-O_Of9FO-3gPaRIWFayQ': {
+    reply: `🎉 欢迎加入 FOYA 科技官方直招渠道！\n👉 @foya02`
+  },
+  '8096260794:AAEDo8QrRr3_rZusiqsoCS49l3qeIiVZZU8': {
+    reply: `🎉 欢迎加入 FOYA 科技官方直招渠道！\n👉 @foya02`
+  },
+  '7116469550:AAEAz3IZwMhxrayYJyHE6rf6yyMeyasn4Hk': {
+    reply: `🔍 SEO 岗位推荐\n👉 @SEO_job188`
+  },
+  '7763589134:AAFRCdEcp1bOhmi4jFumC3Yzsxyf0NJwVCA': {
+    reply: `📊 欢迎了解运营岗位\n👉 @yunying_job_group`
+  }
   '7964552472:AAHikf4d2MjRdAnlDw2yqalrOSXOlleGd38': {
     reply: `🧱 Web 前端岗位推荐\n👉 @web_H5_CSS_JS_job`
   },
