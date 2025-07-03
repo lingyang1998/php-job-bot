@@ -10,7 +10,7 @@ const bots = {
   '7171854531:AAFag6hlDGL7B7K46WPE49GvhJy_b1XNkt4': {
     reply: `🎯 欢迎关注【运营岗位】\n👉 @yunying_job_group`
   },
-    '7918845251:AAHLjezgYuibDJ0BS9uO2kY5Ygzpkdb52vg': {
+  '7918845251:AAHLjezgYuibDJ0BS9uO2kY5Ygzpkdb52vg': {
     reply: `💼 欢迎关注【Java 工作机会】\n👉 @java_jobs_bot`
   },
   '7835528371:AAG2IBpE9ljuj0pW6Ak_TZOvUaUzrYa-SHw': {
@@ -18,7 +18,7 @@ const bots = {
   },
   '7872308369:AAFLzE26sGBLvI7RSRpe1y480zxxGVbPGI0': {
     reply: `🧱 欢迎关注高级 Web 工作机会\n👉 @AdvancedWebJobs`
-      
+  },  // Added missing comma and closing brace here
   '7931339905:AAFMGS76pZMaJsoT2fUCXZbAo7YVUHYbTXU': {
     reply: `🔍 欢迎查看【SEO 岗位】\n👉 @SEO_job_group`
   },
